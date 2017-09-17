@@ -105,7 +105,7 @@ function timeLeft(typeTowerMeal, hour, min)
       document.getElementById("timeUntil").innerHTML = "&nbsp" + minLeft + " minutes until lunch ends." + "&nbsp";
     }
   }
-  *else if (typeTowerMeal == 1) // dinner late meal
+  else if (typeTowerMeal == 1) // dinner late meal
   {
     hourLeft = 17 - hour;
     minLeft = 45 + (60 * hourLeft) - min;
