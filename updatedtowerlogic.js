@@ -53,11 +53,13 @@ function main()
   // Show time until or left of late meal
   if (isTowerMeal)
   {
-    timeLeft(typeTowerMeal, hour, min);
+    //timeLeft(typeTowerMeal, hour, min);
+    document.getElementById("timeUntil").innerHTML = "Currently Open";
   }
   else
   {
-    timeTill(dayOfWeek, hour, min);
+    //timeTill(dayOfWeek, hour, min);
+    document.getElementById("timeUntil").innerHTML = "Not Open";
   }
 
 }
