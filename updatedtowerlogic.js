@@ -19,14 +19,14 @@ function main()
       isTowerMeal = true;
       typeTowerMeal = 3;
     }
-    // lunch every Mon-Fri 11:45am - 1:30pm
-    else if (totalMin >= hourToMin(11,45) && totalMin <= hourToMin(13,30))
+    // grill lunch every Mon-Fri 11:45am - 1:15pm
+    else if (totalMin >= hourToMin(11,45) && totalMin <= hourToMin(13,15))
     {
       isTowerMeal = true;
       typeTowerMeal = 0; // lunch
     }
-    // dinner every day 5:45pm - 7:30pm
-    else if (totalMin >= hourToMin(17,45) && totalMin <= hourToMin(19,30))
+    // grill dinner every day 5:45pm - 7:15pm
+    else if (totalMin >= hourToMin(17,45) && totalMin <= hourToMin(19,15))
     {
       isTowerMeal = true;
       typeTowerMeal = 1;
@@ -53,13 +53,13 @@ function main()
   // Show time until or left of late meal
   if (isTowerMeal)
   {
-    //timeLeft(typeTowerMeal, hour, min);
-    document.getElementById("timeUntil").innerHTML = "Currently Open";
+    timeLeft(typeTowerMeal, totalMin);
+    //document.getElementById("timeUntil").innerHTML = "Currently Open";
   }
   else
   {
     //timeTill(dayOfWeek, hour, min);
-    document.getElementById("timeUntil").innerHTML = "Not Open";
+    document.getElementById("timeUntil").innerHTML = "Grill Not Open";
   }
 
 }
@@ -76,130 +76,54 @@ function changeText(isTowerMeal)
   }
 }
 // Calculate and display time left of meal
-function timeLeft(typeTowerMeal, hour, min)
+function timeLeft(typeTowerMeal, totalMin)
 {
-  var hourLeft
-  var minLeft;
-
   if (typeTowerMeal == 3) // breakfast meal
   {
-    hourLeft = 0;
-    minLeft = 60 - min;
+    minLeft = (hourToMin(9,0) - totalMin) % 60;
     document.getElementById("timeUntil").innerHTML = "&nbsp" + minLeft + " minutes until breakfast ends." + "&nbsp";
   }
   else if (typeTowerMeal == 0) // lunch meal
   {
-    hourLeft = 13 - hour;
-    minLeft = (30 + (60 * hourLeft)) - min;
+    hourLeft = Math.floor((hourToMin(13,15) - totalMin) / 60);
+    minLeft = (hourToMin(13,15) - totalMin) % 60;
 
-    if (hourLeft != 0 && minLeft <= 45)
+    if (hourLeft != 0)
     {
-      document.getElementById("timeUntil").innerHTML = "&nbsp" + hourLeft + " hour and " + minLeft + " minutes until lunch ends." + "&nbsp";
-    }
-    else if (hourLeft != 0 && (minLeft - 60) > 0)
-    {
-      document.getElementById("timeUntil").innerHTML = "&nbsp" + hourLeft + " hour and " + (minLeft - 60) + " minutes until lunch ends." + "&nbsp";
+      document.getElementById("timeUntil").innerHTML = "&nbsp" + hourLeft + " hour and " + minLeft + " minutes until lunch grill closes." + "&nbsp";
     }
     else
     {
-      document.getElementById("timeUntil").innerHTML = "&nbsp" + minLeft + " minutes until lunch ends." + "&nbsp";
+      document.getElementById("timeUntil").innerHTML = "&nbsp" + minLeft + " minutes until lunch grill closes." + "&nbsp";
     }
-  }
-  else if (typeTowerMeal == 1) // dinner late meal
-  {
-    hourLeft = 17 - hour;
-    minLeft = 45 + (60 * hourLeft) - min;
 
-    if (hourLeft != 0 && minLeft <= 45)
+  }
+  else if (typeTowerMeal == 1) // dinner meal
+  {
+    hourLeft = Math.floor((hourToMin(19,15) - totalMin) / 60);
+    minLeft = (hourToMin(19,15) - totalMin) % 60;
+
+    if (hourLeft != 0)
     {
-      document.getElementById("timeUntil").innerHTML = "&nbsp" + hourLeft + " hour and " + minLeft + " minutes until dinner ends." + "&nbsp";
-    }
-    else if (hourLeft != 0 && (minLeft - 60) > 0)
-    {
-      document.getElementById("timeUntil").innerHTML = "&nbsp" + hourLeft + " hour and " + (minLeft - 60) + " minutes until dinner ends." + "&nbsp";
+      document.getElementById("timeUntil").innerHTML = "&nbsp" + hourLeft + " hour and " + minLeft + " minutes until dinner grill closes." + "&nbsp";
     }
     else
     {
-      document.getElementById("timeUntil").innerHTML = "&nbsp" + minLeft + " minutes until dinner ends." + "&nbsp";
+      document.getElementById("timeUntil").innerHTML = "&nbsp" + minLeft + " minutes until dinner grill closes." + "&nbsp";
     }
   }
-  else if (typeTowerMeal == 2)
+  else if (typeTowerMeal == 2) // brunch meal
   {
-    hourLeft = 13 - hour;
-    minLeft = (60 * hourLeft) - min;
+    hourLeft = Math.floor((hourToMin(13,15) - totalMin) / 60);
+    minLeft = (hourToMin(13,15) - totalMin) % 60;
 
-    if (hourLeft != 0 && minLeft <= 45)
+    if (hourLeft != 0)
     {
       document.getElementById("timeUntil").innerHTML = "&nbsp" + hourLeft + " hour and " + minLeft + " minutes until breakfast ends." + "&nbsp";
-    }
-    else if (hourLeft != 0 && (minLeft - 60) > 0)
-    {
-      document.getElementById("timeUntil").innerHTML = "&nbsp" + hourLeft + " hour and " + (minLeft - 60) + " minutes until breakfast ends." + "&nbsp";
     }
     else
     {
       document.getElementById("timeUntil").innerHTML = "&nbsp" + minLeft + " minutes until breakfast ends." + "&nbsp";
-    }
-  }
-}
-
-// Calculates and displays time until late meal starts
-function timeTill(dayOfWeek, hour, min)
-{
-  var hourLeft;
-  var minLeft;
-
-  // Weekend
-  if (dayOfWeek == 0 || dayOfWeek == 6)
-  {
-      document.getElementById("timeUntil").innerHTML = "&nbsp" + "No Late Meal on the weekends, silly." + "&nbsp";
-  }
-  // Friday
-  else if (dayOfWeek == 5)
-  {
-    if (hour < 14) // before 2pm
-    {
-      hourLeft = 13 - hour;
-      minLeft = 60 - min;
-
-      document.getElementById("timeUntil").innerHTML = "&nbsp" + hourLeft + " hours and " + minLeft + " minutes until Late Meal begins" + "&nbsp";
-    }
-    else // after late lunch
-    {
-      document.getElementById("timeUntil").innerHTML = "&nbsp" + "No more Late Meal today. Sorry, tigers." + "&nbsp"
-    }
-  }
-  else
-  {
-    if (hour < 14) // before 2pm
-    {
-      hourLeft = 13 - hour;
-      minLeft = 60 - min;
-
-      document.getElementById("timeUntil").innerHTML = "&nbsp" + hourLeft + " hours and " + minLeft + " minutes until Late Meal begins" + "&nbsp";
-    }
-    else if (hour == 20 && min < 30) // before 8:30pm but after 8pm
-    {
-      minLeft = 30 - min;
-      document.getElementById("timeUntil").innerHTML = "&nbsp" + minLeft + " minutes until Late Meal begins." + "&nbsp";
-    }
-    else if ((hour < 20) && (min <= 30))
-    {
-      hourLeft = 20 - hour;
-      minLeft = 30 - min;
-
-      document.getElementById("timeUntil").innerHTML = "&nbsp" + hourLeft + " hours and " + minLeft + " minutes until Late Meal begins" + "&nbsp";
-    }
-    else if ((hour < 20) && (min > 30))
-    {
-      hourLeft = 19 - hour;
-      minLeft = 60 - min;
-
-      document.getElementById("timeUntil").innerHTML = "&nbsp" + hourLeft + " hours and " + minLeft + " minutes until Late Meal begins" + "&nbsp";
-    }
-    else
-    {
-      document.getElementById("timeUntil").innerHTML = "&nbsp" + "No more Late Meal today. Sorry, tigers." + "&nbsp";
     }
   }
 }
